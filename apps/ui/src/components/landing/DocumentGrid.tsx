@@ -1,28 +1,7 @@
 import { FileText } from 'lucide-react';
 import { DocumentCard } from './DocumentCard';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
-
-interface Document {
-  id?: string;
-  _id?: string;
-  title: string;
-  content: string;
-  owner: {
-    id: string;
-    name: string;
-    email: string;
-  };
-  collaborators: Array<{
-    user: {
-      id: string;
-      name: string;
-      email: string;
-    };
-    role: string;
-  }>;
-  createdAt: string;
-  updatedAt: string;
-}
+import { Document } from '@/store/documentStore';
 
 interface DocumentGridProps {
   documents: Document[];
@@ -68,10 +47,9 @@ export const DocumentGrid: React.FC<DocumentGridProps> = ({
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {documents.map((doc) => (
         <DocumentCard
-          key={doc.id || doc._id}
+          key={doc._id}
           document={doc}
           onEdit={onEditDocument}
-          onView={onViewDocument}
           onShare={onShareDocument}
         />
       ))}

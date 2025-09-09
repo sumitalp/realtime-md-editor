@@ -1,5 +1,5 @@
 // components/CollaboratorManagement.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { Document } from '@/store/documentStore';
 
@@ -56,8 +56,8 @@ export const CollaboratorManagement: React.FC<CollaboratorManagementProps> = ({
       
       setTimeout(() => setSuccess(null), 3000);
 
-    } catch (err: any) {
-      setError(err.message || 'Failed to add collaborator');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to add collaborator');
     } finally {
       setIsLoading(false);
     }
@@ -86,8 +86,8 @@ export const CollaboratorManagement: React.FC<CollaboratorManagementProps> = ({
       setSuccess('Collaborator removed successfully');
       setTimeout(() => setSuccess(null), 3000);
 
-    } catch (err: any) {
-      setError(err.message || 'Failed to remove collaborator');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to remove collaborator');
     }
   };
 
@@ -131,9 +131,9 @@ export const CollaboratorManagement: React.FC<CollaboratorManagementProps> = ({
       
       setTimeout(() => setSuccess(null), 4000);
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Toggle public failed:', err);
-      setError(err.message || 'Failed to update document visibility');
+      setError(err instanceof Error ? err.message : 'Failed to update document visibility');
       setTimeout(() => setError(null), 5000);
     } finally {
       setIsTogglingPublic(false);
@@ -177,7 +177,7 @@ export const CollaboratorManagement: React.FC<CollaboratorManagementProps> = ({
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900">Share Document</h2>
-                <p className="text-gray-600 mt-1">Collaborate with others on "{document.title}"</p>
+                <p className="text-gray-600 mt-1">Collaborate with others on &ldquo;{document.title}&rdquo;</p>
               </div>
               <button
                 onClick={() => setIsOpen(false)}

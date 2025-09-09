@@ -19,12 +19,17 @@ export class WsJwtStrategy extends PassportStrategy(Strategy, 'ws-jwt') {
     super({
       // Extract token from Socket.IO handshake auth
       jwtFromRequest: ExtractJwt.fromExtractors([
-        (req: JwtRequestPayload) => {
-          return (
-            req.handshake.auth?.token ||
-            req.handshake.headers?.authorization?.replace('Bearer ', '') ||
-            req.request.headers?.authorization?.replace('Bearer ', '')
-          );
+        (req: JwtRequestPayload): string | null => {
+          const token = req.handshake.auth?.token as string;
+          if (token && typeof token === 'string') return token;
+
+          const headerAuth = req.handshake.headers?.authorization;
+          if (headerAuth) return headerAuth.replace('Bearer ', '');
+
+          const requestAuth = req.request.headers?.authorization;
+          if (requestAuth) return requestAuth.replace('Bearer ', '');
+
+          return null;
         },
       ]),
       ignoreExpiration: false,
@@ -32,7 +37,7 @@ export class WsJwtStrategy extends PassportStrategy(Strategy, 'ws-jwt') {
     });
   }
 
-  async validate(payload: WS_JWT_PAYLOAD) {
+  async validate(payload: WS_JWT_PAYLOAD): Promise<unknown> {
     try {
       const user = await this.usersService.findOne(payload.sub);
 
@@ -44,13 +49,15 @@ export class WsJwtStrategy extends PassportStrategy(Strategy, 'ws-jwt') {
       this.logger.debug(`WS JWT validation successful for user: ${user.email}`);
 
       return {
-        userId: (user._id as any).toString(),
+        userId: String(user._id),
         email: user.email,
         name: user.name,
         color: user.color,
       };
     } catch (error) {
-      this.logger.error(`JWT validation failed: ${error.message}`);
+      this.logger.error(
+        `JWT validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
       throw new UnauthorizedException('Token validation failed');
     }
   }

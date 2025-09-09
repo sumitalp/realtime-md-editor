@@ -11,7 +11,7 @@ import * as Y from 'yjs';
 import { Awareness } from 'y-protocols/awareness';
 import { io, Socket } from 'socket.io-client';
 import { useAuthStore } from '@/store/authStore';
-import { useDocumentStore, Document } from '@/store/documentStore';
+import { Document } from '@/store/documentStore';
 
 interface User {
   id: string;
@@ -22,7 +22,7 @@ interface User {
 interface CollaborativeEditorProps {
   documentId: string;
   className?: string;
-  doc?: any;
+  doc?: Document;
 }
 
 export const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
@@ -147,7 +147,7 @@ export const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
         }
         
       } catch (error) {
-        console.log(`Error applying document state: ${(error as any).message}`);
+        console.log(`Error applying document state: ${error instanceof Error ? error.message : 'Unknown error'}`);
       }
     });
 
@@ -159,19 +159,19 @@ export const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
     });
 
     // User presence
-    socket.on('user-presence', (data: { userId: string; cursor: any; selection: any }) => {
+    socket.on('user-presence', (data: { userId: string; cursor: unknown; selection: unknown }) => {
       // Handle cursor updates from other users
       console.log('User presence update:', data);
     });
 
-    socket.on('users-list', (usersList: any) => {
+    socket.on('users-list', (usersList: User[]) => {
       console.log(`👥 Users list updated: ${usersList?.length || 0} users`);
 
       setUsers(() =>new Set(usersList));
     });
 
-    socket.on('user-joined', (data: any) => {
-      console.log(`👤 User joined: ${data.user?.name || 'unknown'}`);
+    socket.on('user-joined', (data: User) => {
+      console.log(`👤 User joined: ${data?.name || 'unknown'}`);
       setUsers(prev => {
         const nextUsers = new Set(prev);
         nextUsers.add(data);
@@ -179,7 +179,7 @@ export const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
       });
     });
 
-    socket.on('user-left', (data: any) => {
+    socket.on('user-left', (data: { userId: string }) => {
       console.log(`👤 User left: ${data.userId}`);
       setUsers(prev => {
         const nextUsers = new Set(prev);
@@ -195,7 +195,7 @@ export const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
     });
 
     // Y.js update handler
-    const updateHandler = (update: Uint8Array, origin: any) => {
+    const updateHandler = (update: Uint8Array, origin: unknown) => {
       console.log('Y.js update from:', origin === socket ? 'socket' : 'editor', 'socket connected:', socket.connected);
       if (origin !== socket && socket.connected) {
         console.log('Sending update to other clients:', update.length, 'bytes');

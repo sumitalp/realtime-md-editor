@@ -1,27 +1,6 @@
 import { DocumentsHeader } from './DocumentsHeader';
 import { DocumentGrid } from './DocumentGrid';
-
-interface Document {
-  id?: string;
-  _id?: string;
-  title: string;
-  content: string;
-  owner: {
-    id: string;
-    name: string;
-    email: string;
-  };
-  collaborators: Array<{
-    user: {
-      id: string;
-      name: string;
-      email: string;
-    };
-    role: string;
-  }>;
-  createdAt: string;
-  updatedAt: string;
-}
+import { Document } from '@/store/documentStore';
 
 interface DocumentsSectionProps {
   documents: Document[];

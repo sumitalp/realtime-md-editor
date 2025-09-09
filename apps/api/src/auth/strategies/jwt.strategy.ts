@@ -39,7 +39,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         color: user.color,
       };
     } catch (error) {
-      this.logger.error(`JWT validation failed: ${error.message}`);
+      this.logger.error(
+        `JWT validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
       throw new UnauthorizedException('Token validation failed');
     }
   }

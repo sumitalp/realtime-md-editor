@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { CollabDocsLogo } from './Logo';
 
@@ -16,19 +16,17 @@ const Header = () => {
     const [signInEmail, setSignInEmail] = useState('');
     const [signInPassword, setSignInPassword] = useState('');
   
-    const [signInLoading, setSignInLoading] = useState(false);
+    const [signInLoading] = useState(false);
 
     // Sign up form state
     const [signUpName, setSignUpName] = useState('');
     const [signUpEmail, setSignUpEmail] = useState('');
     const [signUpPassword, setSignUpPassword] = useState('');
-    const [signUpLoading, setSignUpLoading] = useState(false);
+    const [signUpLoading] = useState(false);
 
     const {
         user,
         isAuthenticated,
-        isLoading,
-        error,
         login,
         register,
         logout,

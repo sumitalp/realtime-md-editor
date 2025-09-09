@@ -55,9 +55,6 @@ interface DocumentStore {
   getAllDocuments: () => Document[]; // Combines public + user documents
 }
 
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001',
-});
 
 // Create separate axios instances for public and authenticated requests
 const publicApi = axios.create({
@@ -105,9 +102,9 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
       set({ loading: true, error: null });
       const response = await publicApi.get('/documents/public');
       set({ publicDocuments: response.data.documents, loading: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
       set({ 
-        error: error.response?.data?.message || 'Failed to fetch public documents', 
+        error: (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to fetch public documents', 
         loading: false 
       });
     }
@@ -118,9 +115,9 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
       set({ loading: true, error: null });
       const response = await publicApi.get(`/documents/public/${id}`);
       set({ currentDocument: response.data, loading: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
       set({ 
-        error: error.response?.data?.message || 'Failed to fetch public document', 
+        error: (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to fetch public document', 
         loading: false 
       });
     }
@@ -132,9 +129,9 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
       set({ loading: true, error: null });
       const response = await authenticatedApi.get('/documents');
       set({ userDocuments: response.data, loading: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
       set({ 
-        error: error.response?.data?.message || 'Failed to fetch your documents', 
+        error: (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to fetch your documents', 
         loading: false 
       });
     }
@@ -145,14 +142,14 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
       set({ loading: true, error: null });
       const response = await authenticatedApi.get(`/documents/${id}`);
       set({ currentDocument: response.data, loading: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
       // If authenticated request fails, try public endpoint as fallback
       try {
         const publicResponse = await publicApi.get(`/documents/public/${id}`);
         set({ currentDocument: publicResponse.data, loading: false });
-      } catch (publicError: any) {
+      } catch (publicError: unknown) {
         set({ 
-          error: error.response?.data?.message || 'Failed to fetch document', 
+          error: (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to fetch document', 
           loading: false 
         });
       }
@@ -170,8 +167,8 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
       }));
       
       return newDocument;
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Failed to create document';
+    } catch (error: unknown) {
+      const errorMessage = (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to create document';
       set({ error: errorMessage });
       throw new Error(errorMessage);
     }
@@ -191,8 +188,8 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
         // Update currentDocument if it's the same document
         currentDocument: state.currentDocument?._id === id ? updatedDocument : state.currentDocument
       }));
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Failed to update document';
+    } catch (error: unknown) {
+      const errorMessage = (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to update document';
       set({ error: errorMessage });
       throw new Error(errorMessage);
     }
@@ -207,8 +204,8 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
         userDocuments: state.userDocuments.filter(doc => doc._id !== id),
         currentDocument: state.currentDocument?._id === id ? null : state.currentDocument
       }));
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Failed to delete document';
+    } catch (error: unknown) {
+      const errorMessage = (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to delete document';
       set({ error: errorMessage });
       throw new Error(errorMessage);
     }
@@ -221,8 +218,8 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
       
       // Refresh the document to get updated collaborators
       await get().fetchDocument(documentId);
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Failed to add collaborator';
+    } catch (error: unknown) {
+      const errorMessage = (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to add collaborator';
       set({ error: errorMessage });
       throw new Error(errorMessage);
     }
@@ -235,8 +232,8 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
       
       // Refresh the document to get updated collaborators
       await get().fetchDocument(documentId);
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Failed to remove collaborator';
+    } catch (error: unknown) {
+      const errorMessage = (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to remove collaborator';
       set({ error: errorMessage });
       throw new Error(errorMessage);
     }

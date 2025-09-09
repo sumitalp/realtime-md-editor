@@ -9,29 +9,6 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { useAuthStore } from '@/store/authStore';
 import { useDocumentStore, Document } from '@/store/documentStore';
 
-interface DocumentData {
-  _id: string;
-  title: string;
-  content: string;
-  ownerId: {
-    _id: string;
-    name: string;
-    email: string;
-  };
-  collaborators: Array<{
-    userId: {
-      _id: string;
-      name: string;
-      email: string;
-      color?: string;
-    };
-    role: 'viewer' | 'editor' | 'owner';
-    addedAt: string;
-  }>;
-  isPublic: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
 
 const DocumentPage: React.FC = () => {
   const router = useRouter();
@@ -46,7 +23,7 @@ const DocumentPage: React.FC = () => {
     if (documentId && token && isInitialized) {
       fetchDocument(documentId);
     }
-  }, [documentId, token, isInitialized]);
+  }, [documentId, token, isInitialized, fetchDocument]);
 
   const document = currentDocument;
   console.log(document)

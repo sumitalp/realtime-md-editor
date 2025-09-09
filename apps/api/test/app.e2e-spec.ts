@@ -1,11 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
 
 describe('AppController (e2e)', () => {
-  let app: INestApplication<App>;
+  let app: INestApplication;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -16,10 +15,14 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
+  it('/ (GET)', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    await request(app.getHttpServer())
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       .get('/')
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       .expect(200)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       .expect('Hello World!');
   });
 });

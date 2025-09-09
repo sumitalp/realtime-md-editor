@@ -16,21 +16,21 @@ export const AuthGuard = ({
   redirectTo = '/', 
   fallback 
 }: AuthGuardProps) => {
-  const { isAuthenticated, isInitializing } = useAuth();
+  const { isAuthenticated, isInitialized } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isInitializing) {
+    if (isInitialized) {
       if (requireAuth && !isAuthenticated) {
         router.push(redirectTo);
       } else if (!requireAuth && isAuthenticated) {
         router.push('/dashboard'); // or wherever authenticated users should go
       }
     }
-  }, [isAuthenticated, isInitializing, requireAuth, router, redirectTo]);
+  }, [isAuthenticated, isInitialized, requireAuth, router, redirectTo]);
 
   // Show loading state while initializing
-  if (isInitializing) {
+  if (!isInitialized) {
     return fallback || (
       <div className="flex items-center justify-center min-h-screen">
         <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>

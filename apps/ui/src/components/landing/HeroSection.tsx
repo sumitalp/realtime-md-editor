@@ -1,4 +1,3 @@
-import { useRouter } from 'next/navigation';
 import { PlusCircle, Eye } from 'lucide-react';
 
 interface HeroSectionProps {
@@ -12,7 +11,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   documentsCount,
   onCreateDocument,
 }) => {
-  const router = useRouter();
 
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8">

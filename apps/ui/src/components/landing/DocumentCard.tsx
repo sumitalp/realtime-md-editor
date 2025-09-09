@@ -4,43 +4,19 @@ import {
     Calendar, 
     Share2, 
     Clock, 
-    Eye, 
     Edit3 
   } from 'lucide-react';
-  
-  interface Document {
-    id?: string;
-    _id?: string;
-    title: string;
-    content: string;
-    owner: {
-      id: string;
-      name: string;
-      email: string;
-    };
-    collaborators: Array<{
-      user: {
-        id: string;
-        name: string;
-        email: string;
-      };
-      role: string;
-    }>;
-    createdAt: string;
-    updatedAt: string;
-  }
+import { Document } from '@/store/documentStore';
   
   interface DocumentCardProps {
     document: Document;
     onEdit: (doc: Document) => void;
-    onView?: (doc: Document) => void;
     onShare?: (doc: Document) => void;
   }
   
   export const DocumentCard: React.FC<DocumentCardProps> = ({
     document,
     onEdit,
-    onView,
     onShare,
   }) => {
     const formatDate = (dateString: string) => {
@@ -94,9 +70,9 @@ import {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <div className="w-6 h-6 bg-gradient-to-r from-gray-400 to-gray-600 rounded-full flex items-center justify-center text-xs text-white">
-              {/* {getInitials(document.owner.name)} */}
+              {getInitials(document.ownerId.name)}
             </div>
-            {/* <span className="text-sm text-gray-600">{document.owner.name}</span> */}
+            <span className="text-sm text-gray-600">{document.ownerId.name}</span>
           </div>
           
           {document.collaborators.length > 0 && (

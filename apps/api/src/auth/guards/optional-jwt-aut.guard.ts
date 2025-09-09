@@ -10,7 +10,15 @@ export class OptionalJwtAuthGuard extends AuthGuard('jwt') {
   }
 
   // Override handleRequest to not throw an error when no token is provided
-  handleRequest(err: any, user: any, info: any, context: ExecutionContext) {
+
+  handleRequest(
+    err: any,
+    user: any,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _info: any,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _context: ExecutionContext,
+  ): any {
     // If there's no user and no error, just return null (no authentication)
     // If there's a user, return it
     // If there's an error, throw it

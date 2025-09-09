@@ -93,34 +93,14 @@ import Link from 'next/link';
 import { CollaborativeEditor } from '@/components/CollaborativeEditor';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { useAuthStore } from '@/store/authStore';
+import { Document } from '@/store/documentStore';
 
-interface DocumentData {
-  _id: string;
-  title: string;
-  content: string;
-  ownerId: {
-    _id: string;
-    name: string;
-    email: string;
-  };
-  collaborators: Array<{
-    userId: {
-      _id: string;
-      name: string;
-      email: string;
-    };
-    role: string;
-  }>;
-  isPublic: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
 
 const DocumentPage: React.FC = () => {
   const params = useParams();
   const documentId = params.documentId as string;
   const { token, user } = useAuthStore();
-  const [document, setDocument] = useState<DocumentData | null>(null);
+  const [document, setDocument] = useState<Document | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
