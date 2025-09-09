@@ -1,0 +1,156 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/authStore';
+
+const RegisterPage: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const { register, isLoading, error, isAuthenticated, clearError } = useAuthStore();
+  const router = useRouter();
+
+  useEffect(() => {
+    clearError();
+    if (isAuthenticated) {
+      router.push('/dashboard');
+    }
+  }, [isAuthenticated, router, clearError]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    clearError();
+
+    if (password !== confirmPassword) {
+      // You might want to add a local error state for this
+      alert('Passwords do not match');
+      return;
+    }
+
+    try {
+      await register({ email, name, password });
+      router.push('/dashboard');
+    } catch (err) {
+      console.error('Registration failed:', err);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="max-w-md w-full space-y-8 p-8">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-900">
+            Create your account
+          </h2>
+          <p className="mt-2 text-gray-600">Join our collaborative platform</p>
+        </div>
+        
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                Full name
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter your full name"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                Email address
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter your email"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter your password"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                Confirm Password
+              </label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Confirm your password"
+              />
+            </div>
+          </div>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+              {error.message}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={isLoading || password !== confirmPassword}
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoading ? (
+              <div className="flex items-center">
+                <div className="animate-spin -ml-1 mr-3 h-5 w-5 text-white">
+                  ⟳
+                </div>
+                Creating account...
+              </div>
+            ) : (
+              'Create account'
+            )}
+          </button>
+
+          <div className="text-center">
+            <Link 
+              href="/login" 
+              className="font-medium text-blue-600 hover:text-blue-500"
+            >
+              Already have an account? Sign in
+            </Link>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default RegisterPage;
