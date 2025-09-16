@@ -16,6 +16,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto } from './dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Request as ExpressRequest } from 'express';
+import { RequestWithUser} from '../types/requests.types';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
@@ -33,7 +34,7 @@ export class UsersController {
   }
 
   @Get('me')
-  getProfile(@Request() req: ExpressRequest & { user?: { userId?: string } }) {
+  getProfile(@Request() req: RequestWithUser) {
     const userId = req.user?.userId;
     if (!userId) {
       throw new UnauthorizedException('User not authenticated');
