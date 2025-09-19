@@ -160,7 +160,6 @@ export const useAuthStore = create<AuthState>()(
           });
 
         } catch (error) {
-          console.log("Current user error: ", error)
           // Token is invalid, clear it
           authService.logout();
           set({

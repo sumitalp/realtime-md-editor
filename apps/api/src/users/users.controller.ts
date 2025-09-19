@@ -16,7 +16,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto } from './dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Request as ExpressRequest } from 'express';
-import { RequestWithUser} from '../types/requests.types';
+import type { RequestWithUser} from '../types/requests.types';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
