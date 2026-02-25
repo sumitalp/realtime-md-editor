@@ -1,0 +1,15 @@
+# Terraform files
+*.tfstate
+*.tfstate.*
+*.tfvars
+!example.tfvars
+!.gitignore
+crash.log
+crash.*.log
+terraform.tfplan
+.terraform/
+.terraform.lock.hcl
+
+# Backend configuration
+backend_override.tf
+backend.tf
